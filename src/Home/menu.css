@@ -1,0 +1,8 @@
+.categorie {
+    align-items: center;
+    
+    width: 300px;
+    height: 100px;
+
+    border: 1px solid gold;
+}
