@@ -1,0 +1,44 @@
+.splashquiz-image {
+    height: 300px;
+    width: 300px;
+
+    margin-top: 30px;
+
+    border: 1px solid var(--main-color-white);
+}
+
+.splashquiz-box {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    flex-direction: column;
+
+    width: 550px;
+    height: 450px;
+
+    border-radius: 20px;
+    border: 1px solid var(--main-color-white);
+    background-color: var(--main-color-grey);
+}
+
+.splashquiz-box > p {
+    font-size: 22px;
+}
+
+.splashquiz-input {
+    padding: 0px 10px;
+    height: 65px;
+    width: 350px;
+
+    font-size: 20px;
+
+    border: 1px solid var(--main-color-white);
+    border-radius: 5px;
+    background-color: var(--main-color-grey);
+}
+
+.splashquiz-send {
+    font-size: 55px;
+    margin-top: 51px;
+    margin-left: 20px;
+}
