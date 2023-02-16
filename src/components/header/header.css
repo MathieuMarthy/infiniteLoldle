@@ -1,0 +1,11 @@
+.header {
+    height: 65px;
+
+    background-color: var(--main-color-grey);
+}
+
+.headerTitle {    
+    color: var(--main-color-white);
+    font-size: 42px;
+    font-family: "Shippori Antique", sans-serif;
+}

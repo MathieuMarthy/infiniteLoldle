@@ -1,16 +1,13 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import ReactDOM from "react-dom/client";
+import App from "./App";
 
-import Menu from "./Home/Menu";
-import App from "./Home/App";
-
-
-ReactDOM.render(
-    <App />,
-    document.getElementById("title")
+const root = ReactDOM.createRoot(
+    document.getElementById("root") as HTMLElement
 );
 
-ReactDOM.render(
-    <Menu />,
-    document.getElementById("menu")
+root.render(
+    <React.StrictMode>
+        <App />
+    </React.StrictMode>
 );
