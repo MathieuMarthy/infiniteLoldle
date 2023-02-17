@@ -1,4 +1,5 @@
 import React from "react";
+import { NavLink } from "react-router-dom";
 
 import "./menu.css";
 
@@ -9,11 +10,11 @@ export const Menu: React.FC = () => {
     ];
 
     return (
-        <div className="categories place-self-center flex mt-44">
+        <div className="flex flex-col place-self-center items-center mt-44">
             {categories.map(categorie =>
-                <a className="categorie text-center" href="https://www.youtube.com/watch?v=yHoI0n2VxMU&t=1155s">
+                <NavLink className="categorie text-center" to={`/${categorie}`}>
                     <h2>{categorie}</h2>
-                </a>
+                </NavLink>
             )}
         </div>
     );
