@@ -1,11 +1,20 @@
 export class Champion {
-    name
-    constructor(name: string) {
-        this.name = name
+    id: Number = 0
+    name: String = ""
+    gender: String = ""
+    position: String = ""
+    species: String = ""
+    resource: String = ""
+    rangeType: String = ""
+    region: String = ""
+    releaseDate: String = ""
+
+    constructor(object: Object) {
+        Object.assign(this, object)
     }
 
     getImagePath(): string {
-        const fileName = this.name
+        const fileName = this.name!!
             .toLowerCase()
             .replaceAll("'", "")
             .replaceAll(" ", "")
@@ -13,4 +22,3 @@ export class Champion {
         return `assets/champions/${fileName}.png`
     }
 }
-

@@ -6,16 +6,34 @@ import { Champion } from "../../models/champion";
 
 
 export const SplashQuiz: React.FC = () => {
+    const [champions, setChampions] = useState<Champion[]>([]);
     const [championsPropose, setChampionsPropose] = useState<Champion[]>([]);
 
-    // réupération des champions
+    useEffect(() => {
+        ChampionDao.findAll()
+            .then((champions) => {
+                setChampions(champions);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }, []);
 
     const onChampionInputChange = (event: any) => {
+        if (event.target.value === "") {
+            setChampionsPropose([]);
+            return
+        }
         const filteredChampions = champions.filter((champion) => {
-            return champion.name.toLowerCase().includes(event.target.value.toLowerCase())
+            return champion.name
+                    .toLowerCase()
+                    .replaceAll("'", "")
+                    .replaceAll(" ", "")
+                    .includes(event.target.value.toLowerCase())
         });
         setChampionsPropose(filteredChampions);
     }
+
 
     return (
         <div className="flex flex-col items-center">
@@ -34,9 +52,11 @@ export const SplashQuiz: React.FC = () => {
             </div>
             <div>
                 <p>Champions disponibles :</p>
-                {championsPropose.map((champion) => (
-                    <p>{champion["name"]}</p>
-                ))}
+                <ul>
+                    {championsPropose.map((champion, index) => (
+                        <li key={index}>{champion.name}</li>
+                    ))}
+                </ul>
             </div>
         </div>
     );
