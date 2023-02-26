@@ -18,11 +18,11 @@ const db = getDatabase(app);
 
 export const ChampionDao = {
     findAll: async () => {
-        // on se place dans le branche "champions" de la db
-        const championsRef = ref(db, "champions");
+        // on se place dans le branche "Champions" de la db
+        const championsRef = ref(db, "Champions");
         const champions = [] as Champion[];
 
-        // on récupère les données dans "champions"
+        // on récupère les données dans "Champions"
         onValue(championsRef, (snapshot) => {
             const data = snapshot.val();
             

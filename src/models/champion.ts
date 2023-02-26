@@ -1,24 +1,22 @@
+import { ApiDao } from "../dao/apiDao"
+
 export class Champion {
     id: Number = 0
-    name: String = ""
-    gender: String = ""
-    position: String = ""
-    species: String = ""
-    resource: String = ""
-    rangeType: String = ""
-    region: String = ""
-    releaseDate: String = ""
+    name: string = ""
+    gender: string = ""
+    position: string = ""
+    species: string = ""
+    resource: string = ""
+    rangeType: string = ""
+    region: string = ""
+    releaseDate: string = ""
+    apiName: string = ""
 
     constructor(object: Object) {
         Object.assign(this, object)
     }
 
-    getImagePath(): string {
-        const fileName = this.name!!
-            .toLowerCase()
-            .replaceAll("'", "")
-            .replaceAll(" ", "")
-            .replaceAll("é", "")
-        return `assets/champions/${fileName}.png`
+    getImage() {
+        return ApiDao.getIconChampion(this.apiName);
     }
 }
