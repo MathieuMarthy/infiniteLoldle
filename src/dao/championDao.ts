@@ -11,9 +11,9 @@ const firebaseConfig = {
     projectId: "infiniteloldle-42d34",
     storageBucket: "infiniteloldle-42d34.appspot.com",
     messagingSenderId: "428057092356",
-    appId: "1:428057092356:web:b6b0cd08e338ad7004b051",
-    measurementId: "G-M9LM2PKZBW"
-};
+    appId: "1:428057092356:web:1579867c976190ed04b051",
+    measurementId: "G-FG481TFYXT"
+  };
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
