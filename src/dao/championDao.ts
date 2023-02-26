@@ -2,7 +2,7 @@ import { getDatabase, ref, onValue } from "firebase/database";
 import { initializeApp } from "firebase/app";
 import { Champion } from "../models/champion";
 
-import data from "../constants.json";
+import data from "../const.json";
 
 const firebaseConfig = {
     apiKey: data["apiKey"],

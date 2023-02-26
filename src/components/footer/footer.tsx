@@ -1,6 +1,6 @@
 import React from "react";
 
-import data from "../../constants.json";
+import data from "../../const.json";
 import "./footer.css";
 
 
