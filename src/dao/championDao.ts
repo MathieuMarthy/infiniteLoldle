@@ -2,8 +2,10 @@ import { getDatabase, ref, onValue } from "firebase/database";
 import { initializeApp } from "firebase/app";
 import { Champion } from "../models/champion";
 
+import data from "../constants.json";
+
 const firebaseConfig = {
-    apiKey: "AIzaSyD0v61V5oOUDgpPENxIM7Hpq5lDbyRBFKM",
+    apiKey: data["apiKey"],
     authDomain: "infiniteloldle-42d34.firebaseapp.com",
     databaseURL: "https://infiniteloldle-42d34-default-rtdb.europe-west1.firebasedatabase.app",
     projectId: "infiniteloldle-42d34",
