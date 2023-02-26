@@ -4,6 +4,7 @@ import { Header } from "./components/header/header";
 
 import { Home } from "./screens/home";
 import { Splash } from "./screens/splash"
+import { Footer } from "./components/footer/footer";
 
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
                 <Route path="/" element={ <Home/> }/>
                 <Route path="/splash" element={ <Splash/> }/>
             </Routes>
+            <Footer/>
         </div>
     );
 }

@@ -39,11 +39,24 @@
 
 .splashquiz-send {
     font-size: 55px;
-    margin-top: 51px;
+    /* margin-top: 51px; */
     margin-left: 20px;
 }
 
 .champions-images {
     height: 50px;
     width: 50px;
+}
+
+.proprosedChampions {
+    display: none;
+    width: 15%;
+
+    border: 1px solid var(--main-color-white);
+    border-radius: 5px;
+    background-color: var(--main-color-grey);
+}
+
+.champions-div:hover {
+    background-color: var(--main-color-grey-hover);
 }
