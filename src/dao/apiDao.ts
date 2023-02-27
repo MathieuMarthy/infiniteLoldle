@@ -1,8 +1,5 @@
-import constants from "../const.json"
-
-
 export const ApiDao = {
     getIconChampion: (champion_name: string) => {
-        return `${constants["apiUrl"]}/${constants["gameVersion"]}/img/champion/${champion_name}.png`
+        return `${process.env.REACT_APP_API_URL}/${process.env.REACT_APP_GAME_VERSION}/img/champion/${champion_name}.png`
     }
 }
