@@ -1,23 +1,43 @@
 import React, { useState, useEffect } from "react";
 
 import "./splashQuiz.css";
-import { ChampionDao } from "../../dao/championDao";
+import { db } from "../../dao/firebase";
+import { onValue, ref } from "firebase/database";
+
 import { Champion } from "../../models/champion";
+import { ApiDao } from "../../dao/apiDao";
 
 
 export const SplashQuiz: React.FC = () => {
     const [champions, setChampions] = useState<Champion[]>([]);
+    const [championToFind, setChampionToFind] = useState<Champion>();
+    const [splashArt, setSplashArt] = useState<string>("");
     const [championsPropose, setChampionsPropose] = useState<Champion[]>([]);
 
     // quand la page est chargé, on récupère tous les persos
     useEffect(() => {
-        ChampionDao.findAll()
-            .then((champions) => {
-                setChampions(champions);
-            })
-            .catch((error) => {
-                console.error(error);
+        const championsRef = ref(db, "Champions");
+        const championsDb = [] as Champion[];
+
+        // on récupère les données dans "Champions"
+        onValue(championsRef, (snapshot) => {
+            const data = snapshot.val();
+            
+            // pour tous les champions, on les ajoute dans le tableau
+            for (const champion in data) {
+                championsDb.push(new Champion(data[champion]));
+            }
+            setChampions(championsDb);
+            const championToFindd = championsDb[Math.floor(Math.random() * championsDb.length)]
+            setChampionToFind(championToFindd);
+
+            ApiDao.getRandomSplashArt(championToFindd)
+                .then((splashArt) => {
+                    setSplashArt(splashArt);
+                    console.log(splashArt);
             });
+            
+        });
     }, []);
 
 
@@ -51,7 +71,7 @@ export const SplashQuiz: React.FC = () => {
         <div className="flex flex-col items-center">
             <div className="splashquiz-box mt-12 content-center">
                 <p>A quel champion appartient ce splash art ?</p>
-                <img className="splashquiz-image" src="https://media.discordapp.net/attachments/1020395649302274160/1069232778916405278/image.png" alt="champion à deviner"/>
+                <img className="splashquiz-image" src={splashArt} alt="champion à deviner"/>
             </div>
             <div className="flex flex-row">
                 <div className="splashquiz-guess-input mt-6">
@@ -66,7 +86,7 @@ export const SplashQuiz: React.FC = () => {
                 {championsPropose.map((champion) => (
                     <div className="champions-div flex items-center p-2 m-2">
                         <img className="champions-images" src={champion.getImage()} alt={champion.name} key={champion.name + "image"}/>
-                        <p className="champions-text" key={champion.name + "text"}>{champion.name}</p>
+                        <p className="champions-text ml-2" key={champion.name + "text"}>{champion.name}</p>
                     </div>
                 ))}
             </div>

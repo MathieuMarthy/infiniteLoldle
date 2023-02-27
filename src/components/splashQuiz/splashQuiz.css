@@ -51,6 +51,7 @@
 .proprosedChampions {
     display: none;
     width: 15%;
+    z-index: 999;
 
     border: 1px solid var(--main-color-white);
     border-radius: 5px;
