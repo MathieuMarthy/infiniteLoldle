@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, SyntheticEvent } from "react";
 
 import "./splashQuiz.css";
 import { db } from "../../dao/firebase";
@@ -12,7 +12,8 @@ export const SplashQuiz: React.FC = () => {
     const [champions, setChampions] = useState<Champion[]>([]);
     const [championToFind, setChampionToFind] = useState<Champion>();
     const [splashArt, setSplashArt] = useState<string>("");
-    const [championsPropose, setChampionsPropose] = useState<Champion[]>([]);
+    const [championsInSearchBar, setChampionsInSearchBar] = useState<Champion[]>([]);
+    const [championsProposed, setChampionsProposed] = useState<Champion[]>([]);
 
     // quand la page est chargé, on récupère tous les persos
     useEffect(() => {
@@ -28,15 +29,14 @@ export const SplashQuiz: React.FC = () => {
                 championsDb.push(new Champion(data[champion]));
             }
             setChampions(championsDb);
-            const championToFindd = championsDb[Math.floor(Math.random() * championsDb.length)]
-            setChampionToFind(championToFindd);
+            const randomChampion = championsDb[Math.floor(Math.random() * championsDb.length)]
+            setChampionToFind(randomChampion);
 
-            ApiDao.getRandomSplashArt(championToFindd)
+            ApiDao.getRandomSplashArt(randomChampion)
                 .then((splashArt) => {
                     setSplashArt(splashArt);
                     console.log(splashArt);
             });
-            
         });
     }, []);
 
@@ -46,7 +46,7 @@ export const SplashQuiz: React.FC = () => {
         const proprosedChampionsHtml = document.getElementById("proprosedChampions")
         if (event.target.value === "") {
             proprosedChampionsHtml!!.style.display = "none";
-            setChampionsPropose([]);
+            setChampionsInSearchBar([]);
             return
         }
         proprosedChampionsHtml!!.style.display = "block";
@@ -63,8 +63,44 @@ export const SplashQuiz: React.FC = () => {
         });
         let championsStartWithTarget = filteredChampions.filter(champion => champion.name.toLowerCase().startsWith(event.target.value))
         filteredChampions = championsStartWithTarget.concat(filteredChampions.filter(e => !championsStartWithTarget.includes(e)))
-        setChampionsPropose(filteredChampions.slice(0, 4));
+        setChampionsInSearchBar(filteredChampions.slice(0, 4));
     }
+
+    const onClickOnChampion = (event: any) => {
+        // récupère le champion qui à été cliqué
+        const championName = event.target.innerText
+        const championClicked = champions.find((champion) => champion.name == championName)
+        
+        // ajoute le champion dans la liste des champions proposés
+        setChampionsProposed(championsProposed.concat([championClicked!!]))
+    }
+
+    useEffect(() => {
+        const championsProposedDiv = document.getElementById("championsGive");
+
+        if (championsProposedDiv && championsProposed.length != 0) {
+            const championToAdd = championsProposed[championsProposed.length - 1]
+            console.log(championToAdd);
+
+            const championDiv = document.createElement("div");
+            championDiv.className ="flex items-center p-2 m-2";
+
+            const championImg = document.createElement("img");
+            championImg.className = "champions-images";
+            championImg.setAttribute("src", championToAdd.getImage())
+            championImg.setAttribute("alt", championToAdd.name)
+            championImg.setAttribute("key", championToAdd.name + "image")
+            championDiv.appendChild(championImg);
+
+            const championP = document.createElement("p");
+            championP.className = "champions-text ml-2";
+            championP.setAttribute("key", championToAdd.name + "text")
+            championP.innerText = championToAdd.name
+            championDiv.appendChild(championP);
+
+            championsProposedDiv.appendChild(championDiv);
+        }
+    }, [championsProposed])
 
 
     return (
@@ -83,12 +119,15 @@ export const SplashQuiz: React.FC = () => {
                 </button>
             </div>
             <div className="proprosedChampions mt-2" id="proprosedChampions">
-                {championsPropose.map((champion) => (
-                    <div className="champions-div flex items-center p-2 m-2">
+                {championsInSearchBar.map((champion) => (
+                    <div className="champions-div flex items-center p-2 m-2" onClick={onClickOnChampion}>
                         <img className="champions-images" src={champion.getImage()} alt={champion.name} key={champion.name + "image"}/>
                         <p className="champions-text ml-2" key={champion.name + "text"}>{champion.name}</p>
                     </div>
                 ))}
+            </div>
+            <div id="championsGive">
+
             </div>
         </div>
     );
