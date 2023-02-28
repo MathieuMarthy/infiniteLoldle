@@ -39,7 +39,6 @@
 
 .splashquiz-send {
     font-size: 55px;
-    /* margin-top: 51px; */
     margin-left: 20px;
 }
 
@@ -48,7 +47,7 @@
     width: 50px;
 }
 
-.proprosedChampions {
+.championsSearchBar {
     display: none;
     width: 15%;
     z-index: 999;
@@ -60,4 +59,20 @@
 
 .champions-div:hover {
     background-color: var(--main-color-grey-hover);
+}
+
+.champions-proposed {
+    width: 300px;
+    margin-top: 10px;
+
+    /* une bordure qui éclaircie la couleur du background */
+    box-shadow: 0 0 10px 2px var(--main-color-grey);
+}
+
+.Green {
+    background-color: var(--main--green);
+}
+
+.Red {
+    background-color: var(--main--red);
 }

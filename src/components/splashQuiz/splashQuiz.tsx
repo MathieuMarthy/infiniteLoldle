@@ -1,4 +1,4 @@
-import React, { useState, useEffect, SyntheticEvent } from "react";
+import React, { useState, useEffect } from "react";
 
 import "./splashQuiz.css";
 import { db } from "../../dao/firebase";
@@ -11,6 +11,7 @@ import { ApiDao } from "../../dao/apiDao";
 export const SplashQuiz: React.FC = () => {
     const [champions, setChampions] = useState<Champion[]>([]);
     const [championToFind, setChampionToFind] = useState<Champion>();
+    const [remainingChampions, setRemainingChampions] = useState<Champion[]>([]);
     const [splashArt, setSplashArt] = useState<string>("");
     const [championsInSearchBar, setChampionsInSearchBar] = useState<Champion[]>([]);
     const [championsProposed, setChampionsProposed] = useState<Champion[]>([]);
@@ -29,29 +30,50 @@ export const SplashQuiz: React.FC = () => {
                 championsDb.push(new Champion(data[champion]));
             }
             setChampions(championsDb);
+            setRemainingChampions(championsDb);
             const randomChampion = championsDb[Math.floor(Math.random() * championsDb.length)]
-            setChampionToFind(randomChampion);
+            
 
             ApiDao.getRandomSplashArt(randomChampion)
                 .then((splashArt) => {
                     setSplashArt(splashArt);
-                    console.log(splashArt);
+                    setChampionToFind(randomChampion);
             });
         });
+
+        const championInput = document.querySelector("#champion-input") as HTMLInputElement;
+        championInput.focus();
     }, []);
 
 
+    const onKeyPressOnInput = (event: any) => {
+        if (event.key === "Enter") {
+            const championClicked = championsInSearchBar[0]
+            console.log(championClicked)
+
+            if (championClicked) {
+                setChampionsProposed(championsProposed.concat([championClicked!!]))
+            }
+        }
+    }
+
+
+    const hideSearchBarPropositions = () => {
+        const championsSearchBarHtml = document.getElementById("championsSearchBar");
+        championsSearchBarHtml!!.style.display = "none";
+    }
+
     // fonction qui est appelé à chaque changement dans la barre de cherche
     const onChampionInputChange = (event: any) => {
-        const proprosedChampionsHtml = document.getElementById("proprosedChampions")
         if (event.target.value === "") {
-            proprosedChampionsHtml!!.style.display = "none";
+            hideSearchBarPropositions();
             setChampionsInSearchBar([]);
             return
         }
-        proprosedChampionsHtml!!.style.display = "block";
+        const championsSearchBarHtml = document.getElementById("championsSearchBar")
+        championsSearchBarHtml!!.style.display = "block";
 
-        let filteredChampions = champions.filter((champion) => {
+        let filteredChampions = remainingChampions.filter((champion) => {
             return champion.name
                     .toLowerCase()
                     .replaceAll("'", "")
@@ -69,21 +91,24 @@ export const SplashQuiz: React.FC = () => {
     const onClickOnChampion = (event: any) => {
         // récupère le champion qui à été cliqué
         const championName = event.target.innerText
-        const championClicked = champions.find((champion) => champion.name == championName)
+        const championClicked = champions.find((champion) => champion.name === championName)
         
         // ajoute le champion dans la liste des champions proposés
         setChampionsProposed(championsProposed.concat([championClicked!!]))
     }
 
+    // Quand on clique sur un champion
     useEffect(() => {
         const championsProposedDiv = document.getElementById("championsGive");
 
-        if (championsProposedDiv && championsProposed.length != 0) {
-            const championToAdd = championsProposed[championsProposed.length - 1]
+        if (championsProposedDiv && championsProposed.length !== 0) {
+            const championToAdd = championsProposed[championsProposed.length - 1];
             console.log(championToAdd);
 
             const championDiv = document.createElement("div");
-            championDiv.className ="flex items-center p-2 m-2";
+            championDiv.className ="champions-proposed flex items-center";
+            const color = championToAdd.name === championToFind!!.name ? "Green" : "Red";
+            championDiv.classList.add(color);
 
             const championImg = document.createElement("img");
             championImg.className = "champions-images";
@@ -98,7 +123,22 @@ export const SplashQuiz: React.FC = () => {
             championP.innerText = championToAdd.name
             championDiv.appendChild(championP);
 
-            championsProposedDiv.appendChild(championDiv);
+            // reset l'input
+            const championInput = document.querySelector("#champion-input") as HTMLInputElement;
+            championInput.value = "";
+            championInput.focus();
+            hideSearchBarPropositions();
+
+            // ajoute l'élement en haut de la liste
+            championsProposedDiv.insertBefore(championDiv, championsProposedDiv.firstChild);
+
+            // si le champion proposé n'est pas bon
+            if (championToAdd.name !== championToFind!!.name) {
+                // on le retire de la liste des champions restants
+                setRemainingChampions(r => r.filter((champion) => champion.name !== championToAdd.name))
+            } else {
+                championInput.disabled = true;
+            }
         }
     }, [championsProposed])
 
@@ -112,22 +152,22 @@ export const SplashQuiz: React.FC = () => {
             <div className="flex flex-row">
                 <div className="splashquiz-guess-input mt-6">
                     <input placeholder="Nom de champion..." className="splashquiz-input" 
-                    type="text" id="champion-input" onChange={ onChampionInputChange }/>
+                    type="text" id="champion-input" onChange={ onChampionInputChange }
+                    onKeyDown={ onKeyPressOnInput }/>
                 </div>
                 <button>
                     <span className="splashquiz-send material-symbols-outlined mt-7">send</span>
                 </button>
             </div>
-            <div className="proprosedChampions mt-2" id="proprosedChampions">
+            <div className="championsSearchBar mt-2" id="championsSearchBar">
                 {championsInSearchBar.map((champion) => (
-                    <div className="champions-div flex items-center p-2 m-2" onClick={onClickOnChampion}>
+                    <div className="champions-div flex items-center p-2 m-2" onClick={ onClickOnChampion }>
                         <img className="champions-images" src={champion.getImage()} alt={champion.name} key={champion.name + "image"}/>
                         <p className="champions-text ml-2" key={champion.name + "text"}>{champion.name}</p>
                     </div>
                 ))}
             </div>
-            <div id="championsGive">
-
+            <div className="mt-2" id="championsGive">
             </div>
         </div>
     );

@@ -3,6 +3,9 @@
     --main-color-black: #0D0A0B;
     --main-color-grey: #2f3138;
     --main-color-grey-hover: #222228;
+    --main--green: #179c00;
+    --main--red: #c30101;
+    --main--orange: #e4a907;
 }
 
 body {
