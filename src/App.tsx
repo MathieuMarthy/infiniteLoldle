@@ -9,7 +9,7 @@ import { Footer } from "./components/footer/footer";
 
 function App() {
     return (
-        <div>
+        <div className="main">
             <Header/>
             <Routes>
                 <Route path="/" element={ <Home/> }/>

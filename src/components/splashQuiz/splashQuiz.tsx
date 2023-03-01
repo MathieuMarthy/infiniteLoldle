@@ -32,7 +32,6 @@ export const SplashQuiz: React.FC = () => {
             setChampions(championsDb);
             setRemainingChampions(championsDb);
             const randomChampion = championsDb[Math.floor(Math.random() * championsDb.length)]
-            
 
             ApiDao.getRandomSplashArt(randomChampion)
                 .then((splashArt) => {
@@ -49,14 +48,12 @@ export const SplashQuiz: React.FC = () => {
     const onKeyPressOnInput = (event: any) => {
         if (event.key === "Enter") {
             const championClicked = championsInSearchBar[0]
-            console.log(championClicked)
 
             if (championClicked) {
                 setChampionsProposed(championsProposed.concat([championClicked!!]))
             }
         }
     }
-
 
     const hideSearchBarPropositions = () => {
         const championsSearchBarHtml = document.getElementById("championsSearchBar");
@@ -65,6 +62,7 @@ export const SplashQuiz: React.FC = () => {
 
     // fonction qui est appelé à chaque changement dans la barre de cherche
     const onChampionInputChange = (event: any) => {
+        console.log(event.target.value);
         if (event.target.value === "") {
             hideSearchBarPropositions();
             setChampionsInSearchBar([]);
@@ -97,7 +95,7 @@ export const SplashQuiz: React.FC = () => {
         setChampionsProposed(championsProposed.concat([championClicked!!]))
     }
 
-    // Quand on clique sur un champion
+    // Quand un champion est proposé, on l'ajoute dans la liste en bas
     useEffect(() => {
         const championsProposedDiv = document.getElementById("championsGive");
 
@@ -138,10 +136,34 @@ export const SplashQuiz: React.FC = () => {
                 setRemainingChampions(r => r.filter((champion) => champion.name !== championToAdd.name))
             } else {
                 championInput.disabled = true;
+                championInput.placeholder = "Gagné !"
+
+                const restartButton = document.querySelector("#restart-button") as HTMLButtonElement;
+                restartButton!!.style.display = "flex";
             }
         }
     }, [championsProposed])
 
+    const restartGame = () => {
+        const championInput = document.querySelector("#champion-input") as HTMLInputElement;
+        championInput.disabled = false;
+        championInput.placeholder = "Nom de champion..."
+
+        const championsProposedDiv = document.getElementById("championsGive");
+        championsProposedDiv!!.innerHTML = "";
+
+        const restartButton = document.querySelector("#restart-button") as HTMLButtonElement;
+        restartButton!!.style.display = "none";
+
+        const randomChampion = champions[Math.floor(Math.random() * champions.length)]
+        ApiDao.getRandomSplashArt(randomChampion)
+            .then((splashArt) => {
+                setSplashArt(splashArt);
+                setChampionToFind(randomChampion);
+                setChampionsProposed([]);
+                setRemainingChampions(champions);
+        });
+    }
 
     return (
         <div className="flex flex-col items-center">
@@ -169,6 +191,9 @@ export const SplashQuiz: React.FC = () => {
             </div>
             <div className="mt-2" id="championsGive">
             </div>
+            <a className="restart-button" id="restart-button" onClick={ restartGame }>
+                <p>Relancer</p>
+            </a>
         </div>
     );
 }
