@@ -1,5 +1,6 @@
 import {initializeApp} from "firebase/app";
 import {child, get, getDatabase, ref} from "firebase/database";
+import {InfiniteLoldleNotFoundError} from "../errors";
 
 const firebaseConfig = {
     apiKey: process.env.API_KEY,
@@ -22,6 +23,19 @@ export const championsDao = {
     getAllChampions: async () => {
         const championsRef = ref(db, "Champions");
         const data = await get(child(championsRef, "/"))
+        return data.val()
+    },
+
+    /**
+     * Get a champion by his name
+     * @param name
+     */
+    getChampionByName: async (name: string) => {
+        const championsRef = ref(db, "Champions");
+        const data = await get(child(championsRef, name))
+        if (!data.exists()) {
+            throw new InfiniteLoldleNotFoundError()
+        }
         return data.val()
     }
 }

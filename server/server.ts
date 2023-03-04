@@ -5,7 +5,7 @@ import * as HapiSwagger from "hapi-swagger";
 import Joi from "joi";
 import {Request, ResponseToolkit} from "@hapi/hapi";
 import {championController} from "./controller/championController";
-
+import {InfiniteLoldleNotFoundError} from "./errors";
 
 const joiChampion = Joi.object({
     "apiName": Joi.string().required(),
@@ -24,7 +24,7 @@ const joiChampions = Joi.object().pattern(Joi.string(), joiChampion).description
 
 const swaggerOptions = {
     info: {
-        title: "L'API of infinite loldel",
+        title: "L'API of infinite loldle",
         version: "1.0.0",
     }
 };
@@ -32,21 +32,51 @@ const swaggerOptions = {
 const routes = [
     {
         method: "GET",
-        path: "/",
+        path: "/champions",
         handler: async (request: Request, h: ResponseToolkit) => {
             try {
                 return h.response(await championController.getAllChampions()).code(200)
             } catch (e) {
-                return h.response("Fail").code(500)
+                return h.response({"message": "error while trying to get the champions"}).code(500)
             }
         },
         options: {
             description: "Get all champions",
             notes: "Get all champions",
-            tags: ["api"],
+            tags: ["api", "champions"],
             response: {
                 status: {
                     200: joiChampions,
+                }
+            }
+        }
+    },
+    {
+        method: "GET",
+        path: "/champions/{name}",
+        handler: async (request: Request, h: ResponseToolkit) => {
+            try {
+                return h.response(await championController.getChampionByName(request.params.name)).code(200)
+            } catch (e: any) {
+                if (e instanceof InfiniteLoldleNotFoundError) {
+                    return h.response({"message": "champion not found"}).code(404)
+                } else {
+                    return h.response({"message": "error while trying to get the champion"}).code(500)
+                }
+            }
+        },
+        options: {
+            description: "Get a champion by his name",
+            notes: "Get a champion by his name",
+            tags: ["api", "champions"],
+            validate: {
+                params: Joi.object({
+                    name: Joi.string().required().description("Name of the champion in lower case without space and special characters (ex: 'kaisa' for Kai'Sa)")
+                })
+            },
+            response: {
+                status: {
+                    200: joiChampion,
                 }
             }
         }
