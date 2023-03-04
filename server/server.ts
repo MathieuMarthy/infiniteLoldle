@@ -80,6 +80,36 @@ const routes = [
                 }
             }
         }
+    },
+    {
+        method: "GET",
+        path: "/splash-art/random/{name}",
+        handler: async (request: Request, h: ResponseToolkit) => {
+            try {
+                return h.response(await championController.getRandomSplashArt(request.params.name)).code(200)
+            } catch (e: any) {
+                if (e instanceof InfiniteLoldleNotFoundError) {
+                    return h.response({"message": "champion not found"}).code(404)
+                } else {
+                    return h.response({"message": "error while trying to get the champion"}).code(500)
+                }
+            }
+        },
+        options: {
+            description: "Get a random splash art of a champion by his name",
+            notes: "Get a random splash art of a champion by his name",
+            tags: ["api", "splash-art"],
+            validate: {
+                params: Joi.object({
+                    name: Joi.string().required().description("Name of the champion in lower case without space and special characters (ex: 'kaisa' for Kai'Sa)")
+                })
+            },
+            response: {
+                status: {
+                    200: Joi.string().description("URL of the splash art")
+                }
+            }
+        }
     }
 ]
 
