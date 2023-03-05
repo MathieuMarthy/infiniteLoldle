@@ -1,7 +1,8 @@
 import {RIOT_API_URL, GAME_VERSION} from "../constants";
+import fetch from "node-fetch";
 
 export const riotDao = {
-    getRandomSplashArt: async (championApiName: string): Promise<string> => {
+    getRandomSplashArt: async (championApiName: string) => {
         const res = await fetch(`${RIOT_API_URL}/${GAME_VERSION}/data/en_US/champion/${championApiName}.json`)
         const json = await res.json()
         const skins = json.data[championApiName].skins

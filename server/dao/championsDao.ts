@@ -1,5 +1,5 @@
 import {initializeApp} from "firebase/app";
-import {getDatabase, ref, onValue} from "firebase/database";
+import {child, get, getDatabase, ref} from "firebase/database";
 import {InfiniteLoldleNotFoundError} from "../errors";
 
 const firebaseConfig = {
@@ -17,29 +17,24 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app)
 
 export const championsDao = {
-    champions: [],
-
-    /**
-     * Get all champions
-     */
     getAllChampions: async () => {
-        return championsDao.champions
+        const championsRef = ref(db, "Champions");
+        const data = await get(child(championsRef, "/"))
+        return data.val()
     },
 
-    /**
-     * Get a champion by his name
-     * @param name
-     */
-    getChampionByName: async (name: string) => {
-        const champion = championsDao.champions.find((champion) => champion["name"] === name)
-        if (!champion) {
+    getChampionByName: async (championName: string) => {
+        const championsRef = ref(db, "Champions");
+        const data = await get(child(championsRef, championName))
+        if (!data.exists()) {
             throw new InfiniteLoldleNotFoundError()
         }
-        return champion
+        return data.val()
+    },
+
+    getRandomChampion: async () => {
+        const champions = await championsDao.getAllChampions()
+        const championsKeys = Object.keys(champions)
+        return champions[championsKeys[Math.floor(Math.random() * championsKeys.length)]]
     }
 }
-
-// Quand les données de la base de données sont modifiées, on met à jour le cache
-onValue(ref(db, "Champions"), (snapshot) => {
-    championsDao.champions = snapshot.val()
-})

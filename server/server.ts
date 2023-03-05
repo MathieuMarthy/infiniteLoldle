@@ -83,10 +83,55 @@ const routes = [
     },
     {
         method: "GET",
+        path: "/champions/random",
+        handler: async (request: Request, h: ResponseToolkit) => {
+            try {
+                return h.response(await championController.getRandomChampion()).code(200)
+            } catch (e: any) {
+                if (e instanceof InfiniteLoldleNotFoundError) {
+                    return h.response({"message": "champion not found"}).code(404)
+                } else {
+                    return h.response({"message": "error while trying to get the champion"}).code(500)
+                }
+            }
+        }
+    },
+    {
+        method: "GET",
+        path: "/splash-art/random",
+        handler: async (request: Request, h: ResponseToolkit) => {
+            try {
+                const [champion, splashArtUrl] = await championController.getRandomSplashArt()
+                return h.response({"splashArtUrl": splashArtUrl, "champion": champion}).code(200)
+            } catch (e: any) {
+                if (e instanceof InfiniteLoldleNotFoundError) {
+                    return h.response({"message": "champion not found"}).code(404)
+                } else {
+                    return h.response({"message": "error while trying to get the champion"}).code(500)
+                }
+            }
+        },
+        options: {
+            description: "Get a random splash art of a random champion",
+            notes: "Get a random splash art of a random champion",
+            tags: ["api", "splash-art"],
+            response: {
+                status: {
+                    200: Joi.object({
+                        "splashArtUrl": Joi.string().required().description("Url of the splash art"),
+                        "champion": joiChampion
+                    })
+                }
+            }
+        }
+    },
+    {
+        method: "GET",
         path: "/splash-art/random/{name}",
         handler: async (request: Request, h: ResponseToolkit) => {
             try {
-                return h.response(await championController.getRandomSplashArt(request.params.name)).code(200)
+                const splashArtUrl = await championController.getRandomSplashArtByName(request.params.name)
+                return h.response({"splashArtUrl": splashArtUrl}).code(200)
             } catch (e: any) {
                 if (e instanceof InfiniteLoldleNotFoundError) {
                     return h.response({"message": "champion not found"}).code(404)
@@ -106,7 +151,9 @@ const routes = [
             },
             response: {
                 status: {
-                    200: Joi.string().description("URL of the splash art")
+                    200: Joi.object({
+                        "splashArtUrl": Joi.string().required().description("Url of the splash art")
+                    }),
                 }
             }
         }

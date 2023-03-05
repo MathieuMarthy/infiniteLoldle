@@ -22,10 +22,33 @@ export const championController = {
         }
     },
 
-    getRandomSplashArt: async (name: string) => {
+    getRandomChampion: () => {
         try {
-            const champion = await championsDao.getChampionByName(name)
+            return championsDao.getRandomChampion()
+        } catch (e: any) {
+            if (e instanceof InfiniteLoldleNotFoundError) {
+                throw e
+            }
+            return Promise.reject()
+        }
+    },
+
+    getRandomSplashArtByName: async (name: string) => {
+        try {
+            const champion: any = await championsDao.getChampionByName(name)
             return riotDao.getRandomSplashArt(champion["apiName"])
+        } catch (e: any) {
+            if (e instanceof InfiniteLoldleNotFoundError) {
+                throw e
+            }
+            return Promise.reject()
+        }
+    },
+
+    getRandomSplashArt: async () => {
+        try {
+            const champion = await championsDao.getRandomChampion()
+            return [champion, await riotDao.getRandomSplashArt(champion["apiName"])]
         } catch (e: any) {
             if (e instanceof InfiniteLoldleNotFoundError) {
                 throw e
