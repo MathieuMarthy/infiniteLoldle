@@ -160,9 +160,18 @@ const routes = [
     }
 ]
 
+
 const server = Hapi.server({
     port: 5000,
-    host: "localhost"
+    host: "localhost",
+    routes: {
+        cors: {
+            origin: ["*"],
+            additionalHeaders: ["cache-control", "x-requested-with"]
+
+        }
+
+    }
 });
 
 server.route(routes);

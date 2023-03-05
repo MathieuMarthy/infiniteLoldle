@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect} from "react";
 
 import "./splashQuiz.css";
-import { Champion } from "../../models/champion";
-import { RiotApiDao } from "../../dao/riotApiDao";
-import { onValue, ref } from "firebase/database";
-import { db } from "../../dao/firebase";
+import {Champion} from "../../models/champion";
+import {apiDao} from "../../dao/apiDao";
 
 
 export const SplashQuiz: React.FC = () => {
@@ -17,29 +15,25 @@ export const SplashQuiz: React.FC = () => {
 
     // quand la page est chargé, on récupère tous les persos
     useEffect(() => {
-        const championsRef = ref(db, "Champions");
-        const championsDb: Champion[] = [];
+        // on prend tous les champions
+        apiDao.getAllChampions()
+            .then((champions) => {
+                const championsList = [] as Champion[];
+                // on transforme les champions en objet
+                for (const champion in champions) {
+                    championsList.push(new Champion(champions[champion]));
+                }
 
-        // on récupère les données dans "Champions"
-        onValue(championsRef, (snapshot) => {
-            const data = snapshot.val();
+                setChampions(championsList);
+                setRemainingChampions(championsList);
 
-            // pour tous les championsDb, on les ajoute dans le tableau
-            for (const champion in data) {
-                championsDb.push(new Champion(data[champion]));
-            }
-
-            const randomChampion = championsDb[Math.floor(Math.random() * championsDb.length)]
-
-            RiotApiDao.getRandomSplashArt(randomChampion)
-                .then((splashArt) => {
-                    console.log("ici");
-                    setChampions(championsDb);
-                    setRemainingChampions(championsDb);
-                    setSplashArt(splashArt);
-                    setChampionToFind(randomChampion);
-                });
-        });
+                // on récupère un splash art et son champion aléatoirement
+                apiDao.getRandomSplashArt()
+                    .then(([splashArt, champion]) => {
+                        setSplashArt(splashArt);
+                        setChampionToFind(new Champion(champion));
+                    })
+            })
     }, []);
 
 
@@ -153,14 +147,11 @@ export const SplashQuiz: React.FC = () => {
         const restartButton = document.querySelector("#restart-button") as HTMLButtonElement;
         restartButton!!.style.display = "none";
 
-        const randomChampion = champions[Math.floor(Math.random() * champions.length)]
-        RiotApiDao.getRandomSplashArt(randomChampion)
-            .then((splashArt) => {
+        apiDao.getRandomSplashArt()
+            .then(([splashArt, champion]) => {
                 setSplashArt(splashArt);
-                setChampionToFind(randomChampion);
-                setChampionsProposed([]);
-                setRemainingChampions(champions);
-        });
+                setChampionToFind(new Champion(champion));
+            })
     }
 
     return (
