@@ -8,7 +8,7 @@ Infinite Loldle regroupe plusieurs mini-jeux sur l'univers de League of Legends.
 Le but de ces mini-jeux est de retrouver des personnages en fonction de leurs  
 images, spécificités ou de leur voix.
 
-Une API est disponible pour récupérer des données sur les personnages de League of Legends. [Lien vers la documentation](#Documentation%20de%20l%E2%80%99api)
+Une API est disponible pour récupérer des données sur les personnages de League of Legends. [Lien vers la documentation](#Documentation-de-lapi)
 ## Technologies utilisées
 
 **Client:** React, TailwindCSS
