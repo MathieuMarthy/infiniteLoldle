@@ -3,7 +3,7 @@ import React, {useState, useEffect} from "react";
 import "./splashQuiz.css";
 import {Champion} from "../../models/champion";
 import {apiDao} from "../../dao/apiDao";
-
+import {ChampionSearchBar} from "../ChampionSearchBar/championSearchBar";
 
 export const SplashQuiz: React.FC = () => {
     const [champions, setChampions] = useState<Champion[]>([]);
@@ -54,7 +54,6 @@ export const SplashQuiz: React.FC = () => {
 
     // fonction qui est appelé à chaque changement dans la barre de cherche
     const onChampionInputChange = (event: any) => {
-        console.log(event.target.value);
         if (event.target.value === "") {
             hideSearchBarPropositions();
             setChampionsInSearchBar([]);
@@ -65,13 +64,13 @@ export const SplashQuiz: React.FC = () => {
 
         let filteredChampions = remainingChampions.filter((champion) => {
             return champion.name
+                .toLowerCase()
+                .replaceAll("'", "")
+                .replaceAll(" ", "")
+                .includes(event.target.value
                     .toLowerCase()
                     .replaceAll("'", "")
-                    .replaceAll(" ", "")
-                    .includes(event.target.value
-                                .toLowerCase()
-                                .replaceAll("'", "")
-                                .replaceAll(" ", ""))
+                    .replaceAll(" ", ""))
         });
         let championsStartWithTarget = filteredChampions.filter(champion => champion.name.toLowerCase().startsWith(event.target.value))
         filteredChampions = championsStartWithTarget.concat(filteredChampions.filter(e => !championsStartWithTarget.includes(e)))
@@ -82,7 +81,7 @@ export const SplashQuiz: React.FC = () => {
         // récupère le champion qui à été cliqué
         const championName = event.target.innerText
         const championClicked = champions.find((champion) => champion.name === championName)
-        
+
         // ajoute le champion dans la liste des champions proposés
         setChampionsProposed(championsProposed.concat([championClicked!!]))
     }
@@ -96,7 +95,7 @@ export const SplashQuiz: React.FC = () => {
             console.log(championToAdd);
 
             const championDiv = document.createElement("div");
-            championDiv.className ="champions-proposed flex items-center";
+            championDiv.className = "champions-proposed flex items-center";
             const color = championToAdd.name === championToFind!!.name ? "Green" : "Red";
             championDiv.classList.add(color);
 
@@ -160,29 +159,19 @@ export const SplashQuiz: React.FC = () => {
                 <p>A quel champion appartient ce splash art ?</p>
                 <img className="splashquiz-image" src={splashArt} alt="champion à deviner"/>
             </div>
-            <div className="flex flex-row">
-                <div className="splashquiz-guess-input mt-6">
-                    <input placeholder="Nom de champion..." className="splashquiz-input" 
-                    type="text" id="champion-input" onChange={ onChampionInputChange }
-                    onKeyDown={ onKeyPressOnInput }/>
-                </div>
-                <button>
-                    <span className="splashquiz-send material-symbols-outlined mt-7">send</span>
-                </button>
-            </div>
-            <div className="championsSearchBar mt-2" id="championsSearchBar">
-                {championsInSearchBar.map((champion) => (
-                    <div className="champions-div flex items-center p-2 m-2" onClick={ onClickOnChampion }>
-                        <img className="champions-images" src={champion.getImage()} alt={champion.name} key={champion.name + "image"}/>
-                        <p className="champions-text ml-2" key={champion.name + "text"}>{champion.name}</p>
-                    </div>
-                ))}
-            </div>
+
+            <ChampionSearchBar
+                onChampionInputChange={onChampionInputChange}
+                onKeyPressOnInput={onKeyPressOnInput}
+                onClickOnChampion={onClickOnChampion}
+                championsInSearchBar={championsInSearchBar}
+            />
+
             <div className="mt-2" id="championsGive">
             </div>
-            <a className="restart-button" id="restart-button" onClick={ restartGame }>
+            <button className="restart-button" id="restart-button" onClick={restartGame}>
                 <p>Relancer</p>
-            </a>
+            </button>
         </div>
     );
 }

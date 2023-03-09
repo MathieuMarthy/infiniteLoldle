@@ -1,0 +1,18 @@
+.champions-images {
+    height: 50px;
+    width: 50px;
+}
+
+.championsSuggest {
+    display: none;
+    width: 350px;
+    z-index: 999;
+
+    border: 1px solid var(--main-color-white);
+    border-radius: 5px;
+    background-color: var(--main-color-grey);
+}
+
+.champions-div:hover {
+    background-color: var(--main-color-grey-hover);
+}

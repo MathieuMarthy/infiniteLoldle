@@ -25,42 +25,6 @@
     font-size: 22px;
 }
 
-.splashquiz-input {
-    padding: 0px 10px;
-    height: 65px;
-    width: 350px;
-
-    font-size: 20px;
-
-    border: 1px solid var(--main-color-white);
-    border-radius: 5px;
-    background-color: var(--main-color-grey);
-}
-
-.splashquiz-send {
-    font-size: 55px;
-    margin-left: 20px;
-}
-
-.champions-images {
-    height: 50px;
-    width: 50px;
-}
-
-.championsSearchBar {
-    display: none;
-    width: 15%;
-    z-index: 999;
-
-    border: 1px solid var(--main-color-white);
-    border-radius: 5px;
-    background-color: var(--main-color-grey);
-}
-
-.champions-div:hover {
-    background-color: var(--main-color-grey-hover);
-}
-
 .champions-proposed {
     width: 300px;
     margin-top: 10px;
