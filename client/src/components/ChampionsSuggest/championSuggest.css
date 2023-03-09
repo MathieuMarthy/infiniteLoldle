@@ -5,6 +5,7 @@
 
 .championsSuggest {
     display: none;
+    position: absolute;
     width: 350px;
     z-index: 999;
 

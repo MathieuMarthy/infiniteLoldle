@@ -4,6 +4,7 @@ import "./splashQuiz.css";
 import {Champion} from "../../models/champion";
 import {apiDao} from "../../dao/apiDao";
 import {ChampionSearchBar} from "../ChampionSearchBar/championSearchBar";
+import {ChampionsProposed} from "../championsProposed/championsProposed";
 
 export const SplashQuiz: React.FC = () => {
     const [champions, setChampions] = useState<Champion[]>([]);
@@ -92,35 +93,12 @@ export const SplashQuiz: React.FC = () => {
 
         if (championsProposedDiv && championsProposed.length !== 0) {
             const championToAdd = championsProposed[championsProposed.length - 1];
-            console.log(championToAdd);
-
-            const championDiv = document.createElement("div");
-            championDiv.className = "champions-proposed flex items-center";
-            const color = championToAdd.name === championToFind!!.name ? "Green" : "Red";
-            championDiv.classList.add(color);
-
-            const championImg = document.createElement("img");
-            championImg.className = "champions-images";
-            championImg.setAttribute("src", championToAdd.getImage())
-            championImg.setAttribute("alt", championToAdd.name)
-            championImg.setAttribute("key", championToAdd.name + "image")
-            championDiv.appendChild(championImg);
-
-            const championP = document.createElement("p");
-            championP.className = "champions-text ml-2";
-            championP.setAttribute("key", championToAdd.name + "text")
-            championP.innerText = championToAdd.name
-            championDiv.appendChild(championP);
 
             // reset l'input
             const championInput = document.querySelector("#champion-input") as HTMLInputElement;
             championInput.value = "";
             championInput.focus();
             hideSearchBarPropositions();
-
-            // ajoute l'élement en haut de la liste
-            championsProposedDiv.insertBefore(championDiv, championsProposedDiv.firstChild);
-
             // si le champion proposé n'est pas bon
             if (championToAdd.name !== championToFind!!.name) {
                 // on le retire de la liste des champions restants
@@ -167,8 +145,9 @@ export const SplashQuiz: React.FC = () => {
                 championsInSearchBar={championsInSearchBar}
             />
 
-            <div className="mt-2" id="championsGive">
-            </div>
+            <ChampionsProposed
+                championsProposed={championsProposed}
+                championToFind={championToFind}/>
             <button className="restart-button" id="restart-button" onClick={restartGame}>
                 <p>Relancer</p>
             </button>

@@ -25,14 +25,6 @@
     font-size: 22px;
 }
 
-.champions-proposed {
-    width: 300px;
-    margin-top: 10px;
-
-    /* une bordure qui éclaircie la couleur du background */
-    box-shadow: 0 0 10px 2px var(--main-color-grey);
-}
-
 .Green {
     background-color: var(--main--green);
 }
