@@ -9,10 +9,11 @@
 }
 
 body {
-    height: 100vh;
     color: white;
+    min-height: 100vh;
 
     background-image: url("../assets/backgrounds/bg-jinx.jpg");
+    background-attachment: fixed;
     backdrop-filter: brightness(35%);
     background-repeat: no-repeat;
     background-size: 100%;

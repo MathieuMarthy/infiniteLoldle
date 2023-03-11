@@ -7,13 +7,15 @@ type ChampionsInputProps = {
 }
 
 export const ChampionsInput: React.FC<ChampionsInputProps> = (props) => {
+
     return (
         <div className="flex flex-row">
             <div className="mt-6">
                 <input
                     className="championInput-input"
                     placeholder="Nom de champion..."
-                    type="text" id="champion-input"
+                    type="text"
+                    id="champion-input"
                     onChange={props.onChampionInputChange}
                     onKeyDown={props.onKeyPressOnInput}/>
             </div>

@@ -6,13 +6,19 @@ import {apiDao} from "../../dao/apiDao";
 import {ChampionSearchBar} from "../ChampionSearchBar/championSearchBar";
 import {ChampionsProposed} from "../championsProposed/championsProposed";
 
-export const SplashQuiz: React.FC = () => {
+type SplashQuizProps = {
+    score: number,
+    setScore: (score: number) => void
+}
+
+export const SplashQuiz: React.FC<SplashQuizProps> = (props) => {
     const [champions, setChampions] = useState<Champion[]>([]);
     const [championToFind, setChampionToFind] = useState<Champion>();
     const [remainingChampions, setRemainingChampions] = useState<Champion[]>([]);
     const [splashArt, setSplashArt] = useState<string>("");
     const [championsInSearchBar, setChampionsInSearchBar] = useState<Champion[]>([]);
     const [championsProposed, setChampionsProposed] = useState<Champion[]>([]);
+    const [zoom, setZoom] = useState<number>(5);
 
     // quand la page est chargé, on récupère tous les persos
     useEffect(() => {
@@ -87,8 +93,9 @@ export const SplashQuiz: React.FC = () => {
         setChampionsProposed(championsProposed.concat([championClicked!!]))
     }
 
-    // Quand un champion est proposé, on l'ajoute dans la liste en bas
+    // Quand un champion est proposé
     useEffect(() => {
+        // on l'ajoute dans la liste en bas
         const championsProposedDiv = document.getElementById("championsGive");
 
         if (championsProposedDiv && championsProposed.length !== 0) {
@@ -99,13 +106,22 @@ export const SplashQuiz: React.FC = () => {
             championInput.value = "";
             championInput.focus();
             hideSearchBarPropositions();
+
             // si le champion proposé n'est pas bon
             if (championToAdd.name !== championToFind!!.name) {
                 // on le retire de la liste des champions restants
                 setRemainingChampions(r => r.filter((champion) => champion.name !== championToAdd.name))
+
+                // et on reduit de 0.3 le zoom sur l'image
+                setZoom(z => {
+                    return z - 0.3 < 1.5 ? 1.5 : z - 0.3
+                });
+
             } else {
                 championInput.disabled = true;
                 championInput.placeholder = "Gagné !"
+
+                props.setScore(props.score + 1);
 
                 const restartButton = document.querySelector("#restart-button") as HTMLButtonElement;
                 restartButton!!.style.display = "flex";
@@ -132,18 +148,25 @@ export const SplashQuiz: React.FC = () => {
     }
 
     return (
-        <div className="flex flex-col items-center">
+        <main className="flex flex-col items-center pb-24">
             <div className="splashquiz-box mt-12 content-center">
                 <p>A quel champion appartient ce splash art ?</p>
-                <img className="splashquiz-image" src={splashArt} alt="champion à deviner"/>
+                <div className="inline-block overflow-hidden border border-white">
+                    <img
+                        id="splashArtImg"
+                        className="splashquiz-image"
+                        src={splashArt}
+                        alt="champion à deviner"
+                        style={{transform: `scale(${zoom})`}}
+                    />
+                </div>
             </div>
 
             <ChampionSearchBar
                 onChampionInputChange={onChampionInputChange}
                 onKeyPressOnInput={onKeyPressOnInput}
                 onClickOnChampion={onClickOnChampion}
-                championsInSearchBar={championsInSearchBar}
-            />
+                championsInSearchBar={championsInSearchBar}/>
 
             <ChampionsProposed
                 championsProposed={championsProposed}
@@ -151,6 +174,6 @@ export const SplashQuiz: React.FC = () => {
             <button className="restart-button" id="restart-button" onClick={restartGame}>
                 <p>Relancer</p>
             </button>
-        </div>
+        </main>
     );
 }

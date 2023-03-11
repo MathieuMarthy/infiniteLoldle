@@ -1,15 +1,11 @@
-.main {
-    min-height: 100vh;
-}
-
 footer {
-    position: fixed;
     display: flex;
     justify-content: center;
-    margin-top: 50px;
+
+    position: fixed;
+    bottom: 0;
 
     width: 100%;
-    bottom: 10px;
 }
 
 .twitter-icon {

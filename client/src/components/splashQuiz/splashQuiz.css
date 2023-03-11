@@ -5,6 +5,7 @@
     margin-top: 30px;
 
     border: 1px solid var(--main-color-white);
+    transform: scale(5);
 }
 
 .splashquiz-box {
@@ -32,6 +33,7 @@
 .Red {
     background-color: var(--main--red);
 }
+
 .restart-button {
     display: none;
     align-items: center;
